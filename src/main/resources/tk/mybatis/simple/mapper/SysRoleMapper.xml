@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="tk.mybatis.simple.mapper.SysRoleMapper">
+    <!--通常情况下每 Mapper 映射文件都拥有 自己的 级缓存，不同 Mapper 级缓存互不影 。
+    脏数据的产生：关系型数据库的设计，使得很多时候需要关联多个表才能获得想要的数据。该查询放到某一个命名空间下的映射文件中
+    这样一个多表的查询就会缓存在该命名空间的二级缓存中。涉及这些表的增、删、改操作通常不在同个映射文件中，它们的命名空间不同，
+    当有数据变 时，多表查询的缓存未必会被清空。-->
+    <!--3.使用 RedisCache-->
+    <cache type="org.mybatis.caches.redis.RedisCache" />
+    <!-- 2.使用 EhcacheCache 作为缓存-->
+    <!--    <cache type="org.mybatis.caches.ehcache.EhcacheCache"/>-->
+    <!-- 1.让RoleMapper接口中的注解方法和 SysUserMapper.XML 中的方法使用相同的缓存2 -->
+    <!--    <cache-ref namespace="tk.mybatis.simple.mapper.SysUserMapper"/>-->
+    <!--    <cache eviction="FIFO" readOnly="true" flushInterval="60000" size="512"/>-->
+    <resultMap id="rolePrivilegeListMapChoose" type="SysRole">
+        <discriminator javaType="string" column="role_name">
+            <case value="普通用户" resultMap="BaseResultMap"/>
+            <case value="管理员" resultMap="rolePrivilegeListMapSelect"/>
+        </discriminator>
+    </resultMap>
+    <select id="selectRoleByUserIdChoose" resultMap="rolePrivilegeListMapChoose">
+        select
+        <include refid="Base_Column_List"/>
+        from sys_role inner join sys_user_role sur on sys_role.id = sur.role_id
+        where sur.user_id = #{userId,jdbcType=BIGINT}
+    </select>
+    <resultMap id="rolePrivilegeListMapSelect" type="SysRole" extends="BaseResultMap">
+        <collection property="sysPrivilegeList" fetchType="lazy"
+                    column="{roleId=id}" select="tk.mybatis.simple.mapper.SysPrivilegeMapper.selectPrivilegeByRoleId"/>
+    </resultMap>
+    <select id="selectRoleByUserId" resultMap="rolePrivilegeListMapSelect">
+        select r.id, r.role_name, r.enabled, r.create_by, r.create_time
+        from sys_role r
+                 inner join sys_user_role ur on r.id = ur.role_id
+        where ur.user_id = #{userId, jdbcType=BIGINT}
+    </select>
+    <resultMap id="rolePrivilegeListMap" type="SysRole" extends="BaseResultMap">
+        <collection property="sysPrivilegeList" columnPrefix="privilege_"
+                    resultMap="tk.mybatis.simple.mapper.SysPrivilegeMapper.BaseResultMap"/>
+    </resultMap>
+
+    <select id="selectAllRoleAndPrivileges" resultMap="rolePrivilegeListMap">
+        select r.id, r.role_name, r.enabled, r.create_by, r.create_time
+        from sys_role r
+                 inner join sys_role_privilege srp on r.id = srp.role_id
+                 inner join sys_privilege sp on srp.privilege_id = sp.id
+    </select>
+
+    <resultMap id="BaseResultMap" type="tk.mybatis.simple.model.SysRole">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="role_name" jdbcType="VARCHAR" property="roleName"/>
+        <result column="enabled" jdbcType="INTEGER" property="enabled"/>
+        <!--        <association property="createInfo" javaType="CreateInfo">-->
+        <result column="create_by" jdbcType="BIGINT" property="createBy"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <!--        </association>-->
+    </resultMap>
+    <sql id="Base_Column_List">
+        id, role_name, enabled , create_by, create_time
+    </sql>
+    <!--    在使用 association select 时候需要去掉 parameterType="java.lang.Long"-->
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from sys_role
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete
+        from sys_role
+        where id = #{id,jdbcType=BIGINT}
+    </delete>
+    <insert id="insert" keyColumn="id" keyProperty="id" parameterType="tk.mybatis.simple.model.SysRole"
+            useGeneratedKeys="true">
+        insert into sys_role (role_name, enabled, create_by,
+                              create_time)
+        values (#{roleName,jdbcType=VARCHAR}, #{enabled,jdbcType=INTEGER}, #{createBy,jdbcType=BIGINT},
+                #{createTime,jdbcType=TIMESTAMP})
+    </insert>
+    <insert id="insert3" parameterType="tk.mybatis.simple.model.SysRole">
+        insert into sys_role (role_name, enabled, create_by, create_time)
+        values (#{roleName,jdbcType=VARCHAR}, #{enabled,jdbcType=INTEGER}, #{createBy,jdbcType=BIGINT},
+        #{createTime,jdbcType=TIMESTAMP})
+        <!-- selectKey的书写位置不会影响执行的顺序 -->
+        <selectKey resultType="long" keyColumn="id" keyProperty="id" order="AFTER">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+    </insert>
+    <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="tk.mybatis.simple.model.SysRole"
+            useGeneratedKeys="true">
+        insert into sys_role
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="roleName != null">
+                role_name,
+            </if>
+            <if test="enabled != null">
+                enabled,
+            </if>
+            <if test="createBy != null">
+                create_by,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="roleName != null">
+                #{roleName,jdbcType=VARCHAR},
+            </if>
+            <if test="enabled != null">
+                #{enabled,jdbcType=INTEGER},
+            </if>
+            <if test="createBy != null">
+                #{createBy,jdbcType=BIGINT},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="tk.mybatis.simple.model.SysRole">
+        update sys_role
+        <set>
+            <if test="roleName != null">
+                role_name = #{roleName,jdbcType=VARCHAR},
+            </if>
+            <if test="enabled != null">
+                enabled = #{enabled,jdbcType=INTEGER},
+            </if>
+            <if test="createBy != null">
+                create_by = #{createBy,jdbcType=BIGINT},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="tk.mybatis.simple.model.SysRole">
+        update sys_role
+        set role_name   = #{roleName,jdbcType=VARCHAR},
+            enabled     = #{enabled,jdbcType=INTEGER},
+            create_by   = #{createBy,jdbcType=BIGINT},
+            create_time = #{createTime,jdbcType=TIMESTAMP}
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+</mapper>

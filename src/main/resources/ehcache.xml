@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ehcache xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="ehcache.xsd"
+         updateCheck="true" monitoring="autodetect" dynamicConfig="true">
+    <!--https://www.ehcache.org/ehcache.xml-->
+    <diskStore path="E:/cache"/>
+
+    <defaultCache maxEntriesLocalHeap="3000"
+                  eternal="false" copyOnRead="true" copyOnWrite="true" timeToIdleSeconds="3600"
+                  timeToLiveSeconds="3600" overflowToDisk="true" diskPersistent="true" />
+    <!-- copyOnRead 的含义是，判断从缓存中读取数据时是返回对象的引用还是复制一个对象返
+    回。默认情况下是 false ，即返回数据的引用，这种情况下返回的都是相同的对象，-->
+    <!--可以对指定的命名空间进行单独配置-->
+    <cache name="tk.mybatis.simple.mapper.SysRoleMapper" maxEntriesLocalHeap="3000"
+           eternal="false" copyOnRead="true" copyOnWrite="true" timeToIdleSeconds="3600"
+           timeToLiveSeconds="3600" overflowToDisk="true" diskPersistent="true" />
+</ehcache>
