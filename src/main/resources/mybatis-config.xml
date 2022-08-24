@@ -23,9 +23,16 @@
     <typeHandlers>
         <!-- <typeHandler handler="org.apache.ibatis.type.EnumOrdinalTypeHandler" javaType="tk.mybatis.simple.type.Enable"/> -->
         <typeHandler handler="tk.mybatis.simple.type.EnableTypeHandler" javaType="tk.mybatis.simple.type.Enable"/>
-<!--        <typeHandler handler="tk.mybatis.simple.type.EncryptStringTypeHandler"/>-->
-<!--        <typeHandler handler="tk.mybatis.simple.type.EncryptTypeHandler"/>-->
+        <!-- <typeHandler handler="tk.mybatis.simple.type.EncryptStringTypeHandler"/>-->
+        <!-- <typeHandler handler="tk.mybatis.simple.type.EncryptTypeHandler"/>-->
     </typeHandlers>
+
+    <plugins>
+        <plugin interceptor="tk.mybatis.simple.plugin.interceptor.CameHumpInterceptor" />
+        <plugin interceptor="tk.mybatis.simple.plugin.interceptor.PageInterceptor">
+            <property name="dialect" value="tk.mybatis.simple.plugin.interceptor.MySqlDialect" />
+        </plugin>
+    </plugins>
 
     <!--environment-->
     <environments default="development">

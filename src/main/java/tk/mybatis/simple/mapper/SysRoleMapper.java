@@ -1,13 +1,19 @@
 package tk.mybatis.simple.mapper;
 
 import org.apache.ibatis.annotations.*;
+import org.apache.ibatis.session.RowBounds;
 import tk.mybatis.simple.model.SysRole;
 
 import java.util.List;
 
 //让RoleMapper接口中的注解方法和 SysUserMapper.XML 中的方法使用相同的缓存1
-//@CacheNamespaceRef(.class)
+//@CacheNamespaceRef(SysRoleMapper.class)
 public interface SysRoleMapper {
+    @ResultMap("BaseResultMap")
+    @Select("select * from sys_role")
+    List<SysRole> selectAll(RowBounds rowBounds);
+
+//    List<SysRole> selectAll(RowBounds rowBounds);
 
     List<SysRole> selectRoleByUserIdChoose(Long userId);
 

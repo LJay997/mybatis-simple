@@ -1,16 +1,46 @@
 package tk.mybatis.simple.mapper;
 
+import org.apache.ibatis.session.RowBounds;
 import org.apache.ibatis.session.SqlSession;
 import org.junit.Assert;
 import org.junit.Test;
 import tk.mybatis.simple.model.SysPrivilege;
 import tk.mybatis.simple.model.SysRole;
+import tk.mybatis.simple.plugin.interceptor.PageRowBounds;
 import tk.mybatis.simple.type.Enable;
 
 import java.util.Date;
 import java.util.List;
 
 public class SysRoleMapperTest extends BaseMapperTest {
+
+    @Test
+    public void testSelectAllByRowBounds() {
+        try (SqlSession sqlSession = getSqlSession()) {
+            SysRoleMapper sysRoleMapper = sqlSession.getMapper(SysRoleMapper.class);
+            RowBounds rowBounds = new RowBounds(0, 1);
+            List<SysRole> sysRoleList = sysRoleMapper.selectAll(rowBounds);
+            for (SysRole sysRole : sysRoleList) {
+                System.out.println("角色名：" + sysRole.getRoleName());
+            }
+            // 使用 PageRowBounds 时会查询总数
+            PageRowBounds pageRowBounds = new PageRowBounds(0, 1);
+            sysRoleList = sysRoleMapper.selectAll(pageRowBounds);
+            System.out.println("查询总数：" + pageRowBounds.getTotal());
+            for (SysRole sysRole : sysRoleList) {
+                System.out.println("角色名：" + sysRole.getRoleName());
+            }
+
+            // 再次查询 获取第二个角色
+            pageRowBounds = new PageRowBounds(1, 1);
+            sysRoleList = sysRoleMapper.selectAll(pageRowBounds);
+            System.out.println("查询总数：" + pageRowBounds.getTotal());
+            for (SysRole sysRole : sysRoleList) {
+                System.out.println("角色名：" + sysRole.getRoleName());
+            }
+        }
+
+    }
 
     @Test
     public void testUpdateById() {
