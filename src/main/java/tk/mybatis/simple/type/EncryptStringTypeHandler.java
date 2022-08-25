@@ -4,6 +4,7 @@ import cn.hutool.crypto.SecureUtil;
 import cn.hutool.crypto.symmetric.AES;
 import org.apache.ibatis.type.BaseTypeHandler;
 import org.apache.ibatis.type.JdbcType;
+import org.apache.ibatis.type.MappedJdbcTypes;
 import org.apache.ibatis.type.MappedTypes;
 
 import java.nio.charset.StandardCharsets;
@@ -12,8 +13,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-// 识别不了嵌套的association； BaseTypeHandler 与 TypeHandler 的区别
-@MappedTypes(String.class)
+// 识别不了嵌套的association； BaseTypeHandler 与 TypeHandler 的区别 :BaseTypeHandler配置的时候不需要指定 javaType
 public class EncryptStringTypeHandler extends BaseTypeHandler<String> {
 
     private static final byte[] KEYS = "12345678abcdefgh".getBytes(StandardCharsets.UTF_8);
