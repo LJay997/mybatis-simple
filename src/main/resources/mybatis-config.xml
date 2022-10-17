@@ -13,6 +13,8 @@
         <setting name="aggressiveLazyLoading" value="false"/>
         <!--二级缓存在SqlSessionFactory 默认是打开的-->
         <setting name="cacheEnabled" value="true"/>
+        <!--指定 Enum 使用的默认 TypeHandler （新增于 3.4.5）-->
+<!--        <setting name="defaultEnumTypeHandler" value="com.xxx.demo.enum.SelfDefineEnumTypeHandler"/>-->
     </settings>
 
     <typeAliases>
@@ -21,13 +23,21 @@
     </typeAliases>
 
     <typeHandlers>
-        <!-- <typeHandler handler="org.apache.ibatis.type.EnumOrdinalTypeHandler" javaType="tk.mybatis.simple.type.Enable"/> -->
-        <typeHandler handler="tk.mybatis.simple.type.EnableTypeHandler" javaType="tk.mybatis.simple.type.Enable"/>
+
+<!--          <typeHandler handler="org.apache.ibatis.type.EnumOrdinalTypeHandler" javaType="tk.mybatis.simple.type.EnumOrdinal"/>-->
+<!--        因为  BaseIntDBEnum 类型的数据较多 所以使用注解进行配置 @MappedTypes(value = {SysRoleIntDBEnum.class ,SysRoleIDDBEnum.class})-->
+        <typeHandler handler="tk.mybatis.simple.type.DefaultEnumTypeHandler" />
+        <typeHandler handler="tk.mybatis.simple.type.DefaultStringEnumTypeHandler" />
+<!--        <typeHandler handler="tk.mybatis.simple.type.EnableTypeHandler" javaType="tk.mybatis.simple.type.Enable"/>-->
+
         <!-- <typeHandler handler="tk.mybatis.simple.type.EncryptStringTypeHandler"/>-->
         <!-- <typeHandler handler="tk.mybatis.simple.type.EncryptTypeHandler"/>-->
+        <!--使用该注解可以指定（package 应放在 typeHandler的后面）-->
+<!--        <package name="tk.mybatis.simple.type"/>-->
     </typeHandlers>
 
     <plugins>
+        <plugin interceptor="tk.mybatis.simple.plugin.interceptor.DataSourceSwitchInterceptor" />
         <plugin interceptor="tk.mybatis.simple.plugin.interceptor.CameHumpInterceptor" />
         <plugin interceptor="tk.mybatis.simple.plugin.interceptor.PageInterceptor">
             <property name="dialect" value="tk.mybatis.simple.plugin.interceptor.MySqlDialect" />

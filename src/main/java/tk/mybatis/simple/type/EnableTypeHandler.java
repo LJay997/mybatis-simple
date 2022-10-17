@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Enable类型处理器
+ * Enable类型处理器 模拟 EnumOrdinalTypeHandler 的实现
  */
 public class EnableTypeHandler implements TypeHandler<Enable> {
 

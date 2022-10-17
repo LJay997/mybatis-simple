@@ -4,6 +4,7 @@ import org.apache.ibatis.annotations.CacheNamespace;
 import org.apache.ibatis.annotations.CacheNamespaceRef;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.cache.decorators.FifoCache;
+import tk.mybatis.simple.annotations.ReadOnly;
 import tk.mybatis.simple.model.SysRole;
 import tk.mybatis.simple.model.SysUser;
 
@@ -42,6 +43,7 @@ public interface SysUserMapper {
 
     int updateByPrimaryKey(SysUser record);
 
+    @ReadOnly
     List<SysRole> selectRolesByUserIdAndRoleEnabled(@Param("userId") Long userId, @Param("enabled") Integer enabled);
 
     List<SysRole> selectRolesByUserIdAndRoleEnabled1(@Param("sysUser") SysUser sysUser, @Param("sysRole") SysRole sysRole);

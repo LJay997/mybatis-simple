@@ -13,7 +13,7 @@ import java.util.Properties;
  * 就是循环判断结果。如果是 Map 类型的结果，就对 Map
  * 进行处理 处理时为了避免把己经是驼峰的值转换为纯小写，因此通过首字母是否为大写或是
  * 否包含下画线来判断（实际应用中要根据实际情况修改）。如果符合其中 个条件就转换为驼峰
- * 形式，删除对应的 ey 值，使用新的 ey 值来代替 。
+ * 形式，删除对应的 key ，使用新的 key 来代替 。
  */
 @SuppressWarnings({"unchecked","rawtypes"})
 @Intercepts(@Signature(type = ResultSetHandler.class, method = "handleResultSets", args = {Statement.class}))

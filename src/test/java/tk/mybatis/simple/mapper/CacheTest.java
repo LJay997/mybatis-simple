@@ -44,7 +44,7 @@ public class CacheTest extends BaseMapperTest {
             Assert.assertNotEquals("New Name", user2.getUserName());
             //这里的 user2 和 前一个 session 查询的结果是两个不同的实例
             Assert.assertNotEquals(user1, user2);
-            //执行删除操作
+            //执行删除操作 （执行了任何的“增删改”操作，无论这些“增删改”操作是否影响到了缓存的数据）
             SysUserMapper.deleteByPrimaryKey(2L);
             //获取 user3
             SysUser user3 = SysUserMapper.selectByPrimaryKey(1L);
@@ -62,7 +62,7 @@ public class CacheTest extends BaseMapperTest {
         try (SqlSession sqlSession = getSqlSession()) {
             SysRoleMapper sysRoleMapper = sqlSession.getMapper(SysRoleMapper.class);
             sysRole1 = sysRoleMapper.selectByPrimaryKey(1L);
-            sysRole1.setRoleName("New Name");
+//            sysRole1.setRoleName("New Name");
             SysRole sysRole2 = sysRoleMapper.selectByPrimaryKey(1L);
             Assert.assertEquals("New Name", sysRole2.getRoleName());
             Assert.assertEquals(sysRole1, sysRole2);
@@ -72,7 +72,7 @@ public class CacheTest extends BaseMapperTest {
         try (SqlSession sqlSession = getSqlSession()) {
             SysRoleMapper sysRoleMapper = sqlSession.getMapper(SysRoleMapper.class);
             SysRole sysRole2 = sysRoleMapper.selectByPrimaryKey(1L);
-            sysRole2.setRoleName("New Name");
+//            sysRole2.setRoleName("New Name");
             Assert.assertEquals(sysRole1, sysRole2);
 
             SysRole sysRole3 = sysRoleMapper.selectByPrimaryKey(1L);
@@ -93,7 +93,7 @@ public class CacheTest extends BaseMapperTest {
             //调用 selectByPrimaryKey 方法，查询 id = 1 的用户
             role1 = SysRoleMapper.selectByPrimaryKey(1L);
             //对当前获取的对象重新赋值
-            role1.setRoleName("New Name");
+//            role1.setRoleName("New Name");
             //再次查询获取 id 相同的用户
             SysRole role2 = SysRoleMapper.selectByPrimaryKey(1L);
             //虽然我们没有更新数据库，但是这个用户名和我们 role1 重新赋值的名字相同了
@@ -143,7 +143,7 @@ public class CacheTest extends BaseMapperTest {
         try {
             SysRoleMapper SysRoleMapper = sqlSession.getMapper(SysRoleMapper.class);
             SysRole role = SysRoleMapper.selectByPrimaryKey(2L);
-            role.setRoleName("脏数据");
+//            role.setRoleName("脏数据");
             SysRoleMapper.updateById(role);
             //提交修改
             sqlSession.commit();
@@ -163,7 +163,7 @@ public class CacheTest extends BaseMapperTest {
             Assert.assertEquals("脏数据", role.getRoleName());
             System.out.println("角色名：" + user.getSysRoleList().get(0).getRoleName());
             //还原数据
-            role.setRoleName("普通用户");
+//            role.setRoleName("普通用户");
             SysRoleMapper.updateById(role);
             //提交修改
             sqlSession.commit();

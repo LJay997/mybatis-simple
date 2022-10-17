@@ -2,7 +2,9 @@ package tk.mybatis.simple.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import tk.mybatis.simple.type.Enable;
+import tk.mybatis.simple.type.SysRoleIDDBEnum;
+import tk.mybatis.simple.type.SysRoleIntDBEnum;
+import tk.mybatis.simple.type.SysRoleUserTypeEnum;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -21,12 +23,12 @@ public class SysRole implements Serializable {
     /**
      * 角色ID
      */
-    private Long id;
-
+//    private Long id;
+    private SysRoleIDDBEnum id;
     /**
      * 角色名
      */
-    private String roleName;
+    private SysRoleUserTypeEnum roleName;
 
     /**
      * 有效标志
@@ -48,18 +50,30 @@ public class SysRole implements Serializable {
      */
     private CreateInfo createInfo;
 
-    public Enable getEnabled() {
-        return enabled;
-    }
+//    public Enable getEnabled() {
+//        return enabled;
+//    }
 
-    public void setEnabled(Enable enabled) {
-        this.enabled = enabled;
-    }
+//    public void setEnabled(Enable enabled) {
+//        this.enabled = enabled;
+//    }
 
     /**
      * 有效标志
      */
-    private Enable enabled;
+//    private Enable enabled;
+    /**
+     * 有效标志
+     */
+    private SysRoleIntDBEnum enabled;
+
+    public SysRoleIntDBEnum getEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(SysRoleIntDBEnum enabled) {
+        this.enabled = enabled;
+    }
 
     /**
      * 用户信息
@@ -81,7 +95,7 @@ public class SysRole implements Serializable {
     public SysRole() {
     }
 
-    public SysRole(Long id, String roleName, Long createBy, Date createTime, SysUser user) {
+    public SysRole(SysRoleIDDBEnum id, SysRoleUserTypeEnum roleName, Long createBy, Date createTime, SysUser user) {
         this.id = id;
         this.roleName = roleName;
 

@@ -6,7 +6,7 @@
     这样一个多表的查询就会缓存在该命名空间的二级缓存中。涉及这些表的增、删、改操作通常不在同个映射文件中，它们的命名空间不同，
     当有数据变 时，多表查询的缓存未必会被清空。-->
     <!--3.使用 RedisCache-->
-    <cache type="org.mybatis.caches.redis.RedisCache" />
+    <!--<cache type="org.mybatis.caches.redis.RedisCache" />-->
     <!-- 2.使用 EhcacheCache 作为缓存-->
     <!--    <cache type="org.mybatis.caches.ehcache.EhcacheCache"/>-->
     <!-- 1.让RoleMapper接口中的注解方法和 SysUserMapper.XML 中的方法使用相同的缓存2 -->
@@ -47,9 +47,9 @@
     </select>
 
     <resultMap id="BaseResultMap" type="tk.mybatis.simple.model.SysRole">
-        <id column="id" jdbcType="BIGINT" property="id"/>
+        <id column="id" jdbcType="BIGINT" property="id" />
         <result column="role_name" jdbcType="VARCHAR" property="roleName"/>
-        <result column="enabled" jdbcType="INTEGER" property="enabled"/>
+        <result column="enabled" jdbcType="INTEGER" property="enabled" />
         <!--        <association property="createInfo" javaType="CreateInfo">-->
         <result column="create_by" jdbcType="BIGINT" property="createBy"/>
         <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>

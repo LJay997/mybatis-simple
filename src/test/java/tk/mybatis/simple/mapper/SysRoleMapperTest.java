@@ -7,7 +7,8 @@ import org.junit.Test;
 import tk.mybatis.simple.model.SysPrivilege;
 import tk.mybatis.simple.model.SysRole;
 import tk.mybatis.simple.plugin.interceptor.PageRowBounds;
-import tk.mybatis.simple.type.Enable;
+import tk.mybatis.simple.type.SysRoleIntDBEnum;
+import tk.mybatis.simple.type.SysRoleUserTypeEnum;
 
 import java.util.Date;
 import java.util.List;
@@ -47,7 +48,7 @@ public class SysRoleMapperTest extends BaseMapperTest {
         try (SqlSession sqlSession = getSqlSession()) {
             SysRoleMapper sysRoleMapper = sqlSession.getMapper(SysRoleMapper.class);
             SysRole sysRole = sysRoleMapper.selectById2(1L);
-            sysRole.setEnabled(Enable.disable);
+//            sysRole.setEnabled(Enable.disable);
             sysRoleMapper.updateById(sysRole);
         }
     }
@@ -79,22 +80,33 @@ public class SysRoleMapperTest extends BaseMapperTest {
     }
 
     @Test
-    public void testSelectAllRoleAndPrivileges() {
+    public void testSelectByPrimaryKey() {
         SqlSession sqlSession = getSqlSession();
         SysRoleMapper sysRoleMapper = sqlSession.getMapper(SysRoleMapper.class);
-
-        SysRole sysRole = sysRoleMapper.selectByPrimaryKey(1L);
+        SysRole sysRole = sysRoleMapper.selectByPrimaryKey(100L);
         System.out.println(sysRole);
+    }
+
+    @Test
+    public void testInsertSelective(){
+        SqlSession sqlSession = getSqlSession();
+        SysRoleMapper sysRoleMapper = sqlSession.getMapper(SysRoleMapper.class);
+        SysRole record = new SysRole();
+        record.setEnabled(SysRoleIntDBEnum.ENABLE);
+        int i = sysRoleMapper.insertSelective(record);
+        System.out.println(i);
     }
 
     @Test
     public void testInsert1() {
         SqlSession sqlSession = getSqlSession();
         SysRoleMapper sysRoleMapper = sqlSession.getMapper(SysRoleMapper.class);
-        SysRole sysRole = new SysRole(null, "Jay", 1L, new Date(), null);
+        SysRole sysRole = new SysRole(null, SysRoleUserTypeEnum.ONE, 1L, new Date(), null);
+        sysRole.setEnabled(SysRoleIntDBEnum.ENABLE);
         int result = sysRoleMapper.insert1(sysRole);
         Assert.assertEquals(1, result);
         System.out.println("sysRole.getId() = " + sysRole.getId());
+        sqlSession.commit();
     }
 
     @Test
